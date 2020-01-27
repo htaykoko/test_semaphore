@@ -25,12 +25,9 @@ blocks:
   - name: Run Unit Test
     task:
       jobs:
-        - name: phpmd
-          commands:
-            - php vendor/bin/phpmd app/ text phpmd_ruleset.xml
         - name: php code sniffer
           commands:
-            - php vendor/bin/phpcs app --report-full --standart=P
+            - php vendor/bin/phpcs app --report-full --standard=PSR2
   - name: Run Browser Test
     task:
       jobs:
