@@ -1,0 +1,45 @@
+version: v1.0
+name: Initial Pipeline
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: intall dependencies
+    task:
+      jobs:
+        - name: composer
+          commands:
+            - checkout
+            - cache restore
+            - composer install
+            - cache store
+            - cp .env.example .env
+            - 'php artisan key:generate'
+            - mkdir -p database
+            - touch database/database.sqlite
+            - ./vendor/bin/phpunit
+      env_vars:
+        - name: APP_ENV
+          value: PROD
+  - name: Run Browser Test
+    task:
+      jobs:
+        - name: laravel dusk
+          commands:
+            - checkout
+            - cp .env.example .env
+            - touch database/database.sqlite
+            - cache restore
+            - 'php artisan key:generate'
+            - 'php artisan dusk:install'
+  - name: Run Security Test
+    task:
+      jobs:
+        - name: sensiolabs
+          commands:
+            - checkout
+            - 'git clone https://github.com/sensiolabs/security-checker.git'
+            - cd security-checker
+            - composer install
+            - 'php security-checker security:check ../composer.lock'
