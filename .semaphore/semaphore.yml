@@ -22,12 +22,6 @@ blocks:
       env_vars:
         - name: APP_ENV
           value: PROD
-  - name: Run Unit Test
-    task:
-      jobs:
-        - name: php code sniffer
-          commands:
-            - php vendor/bin/phpcs app --report-full --standard=PSR2
   - name: Run Browser Test
     task:
       jobs:
